@@ -1,0 +1,89 @@
+@startuml
+class Hospital_View {
+- {static} Hospital_View uniqueView
+- {static} ArrayList<Base_Station> baseStations
+- ArrayList<Sensor> sensorList
+- int position
++ {static} Hospital_View getInstance()
++ void addBaseStation(Base_Station)
++ ArrayList<Base_Station> getBaseStations()
++ void update(ArrayList<Sensor>)
++ boolean hasNext()
++ Object next()
++ void resetPosition()
+}
+interface Sensor {
+~ double readingChanged()
+}
+interface Observer {
+~ void update(ArrayList<Sensor>)
+}
+class Home_View {
+- Base_Station baseStation
+- ArrayList<Sensor> sensorList
+- int position
++ void update(ArrayList<Sensor>)
++ boolean hasNext()
++ Object next()
++ void resetPosition()
+}
+class Base_Station {
+- ArrayList<Observer> observers
+- ArrayList<Sensor> sensors
+- String patientName
++ boolean registerObserver(Observer)
++ boolean removeObserver(Observer)
++ String notifyObservers()
+}
+interface Subject {
+~ boolean registerObserver(Observer)
+~ boolean removeObserver(Observer)
+~ String notifyObservers()
+}
+class BodyTemp_Sensor {
+- double bodyTemperature
++ double readingChanged()
++ void setBodyTemperature(double)
+}
+interface Sensor_Iterator {
+~ boolean hasNext()
+~ Object next()
+~ void resetPosition()
+}
+class BloodSugar_Sensor {
+- double bloodSugar
++ double readingChanged()
++ void setBloodSugar(double)
+}
+class HeartRate_Sensor {
+- double heartRate
++ double readingChanged()
++ void setHeartRate(double)
+}
+class User_View {
+- Base_Station baseStation
+- ArrayList<Sensor> sensorList
+- int position
++ void update(ArrayList<Sensor>)
++ boolean hasNext()
++ Object next()
++ void resetPosition()
+}
+
+
+Observer <|.. Hospital_View
+Sensor_Iterator <|.. Hospital_View
+Observer <|.. Home_View
+Sensor_Iterator <|.. Home_View
+Subject <|.. Base_Station
+Sensor <|.. BodyTemp_Sensor
+Sensor <|.. BloodSugar_Sensor
+Sensor <|.. HeartRate_Sensor
+Observer <|.. User_View
+Sensor_Iterator <|.d. User_View
+Observer <-l- Subject : Observes
+Base_Station <-r- Home_View : Subject
+Base_Station <-r- User_View : Subject
+Base_Station <-u- Hospital_View : Subject
+Base_Station -d-> Sensor : Pulls Data
+@enduml
